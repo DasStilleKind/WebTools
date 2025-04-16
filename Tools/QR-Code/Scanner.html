@@ -1,0 +1,365 @@
+
+<!DOCTYPE html><html lang="en"><head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QR Code Scanner</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #2c2c2c;
+            color: #f0f0f0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+        }
+        h1 {
+            margin-bottom: 20px;
+            color: #ffffff;
+        }
+        #camera-select-container {
+            position: absolute;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 10;
+        }
+        #camera-select {
+            padding: 10px;
+            background-color: #444;
+            border: 2px solid #05ff00;
+            border-radius: 15px;
+            color: #fff;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        #camera-select:hover {
+            background-color: #333;
+        }
+        #scanner-container {
+            position: relative;
+            width: 300px;
+            height: 300px;
+            border-radius: 10px;
+            background-color: #000;
+            overflow: hidden;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        }
+        #video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 10px;
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+        #overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+        #overlay .corner {
+            position: absolute;
+            background-color: rgba(255, 255, 255, 0.4);
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+        }
+        #overlay .top-left {
+            top: 10px;
+            left: 10px;
+        }
+        #overlay .top-right {
+            top: 10px;
+            right: 10px;
+        }
+        #overlay .bottom-left {
+            bottom: 10px;
+            left: 10px;
+        }
+        #overlay .bottom-right {
+            bottom: 10px;
+            right: 10px;
+        }
+        #scan-line {
+            position: absolute;
+            top: 60px;
+            left: 20%;
+            width: 60%;
+            height: 20px;
+            background-color: rgba(255, 255, 255, 0.4);
+            border-radius: 6px;
+            animation: scan 2s ease-in-out infinite;
+        }
+        @keyframes scan {
+            0% {
+                top: 60px;
+            }
+            50% {
+                top: calc(100% - 80px);
+            }
+            100% {
+                top: 60px;
+            }
+        }
+        #qr-details {
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: #444;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+            width: 80%;
+            text-align: left;
+            font-size: 16px;
+            color: #fff;
+            max-width: 100%;
+            display: none;
+            opacity: 0;
+            animation: fadeInDetails 1s forwards;
+        }
+        @keyframes fadeInDetails {
+            0% {
+                opacity: 0;
+            }
+            100% {
+                opacity: 1;
+            }
+        }
+        #qr-details p {
+            font-size: 18px;
+            margin: 10px 0;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+            word-break: break-word;
+        }
+        #qr-details span {
+            font-weight: bold;
+        }
+        #qr-details .qr-text {
+            white-space: normal;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+            text-overflow: ellipsis;
+        }
+        #qr-time {
+            font-size: 14px;
+        }
+        .button-container {
+            margin-top: 20px;
+            display: flex;
+            justify-content: space-between;
+            width: 80%;
+            display: none;
+            opacity: 0;
+            animation: fadeInButtons 1.5s forwards;
+        }
+        @keyframes fadeInButtons {
+            0% {
+                opacity: 0;
+                transform: translateX(-30px);
+            }
+            50% {
+                opacity: 0.5;
+            }
+            100% {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+        .button-container button {
+            background-color: #444;
+            color: #fff;
+            border: none;
+            padding: 15px 0;
+            font-size: 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            width: 30%;
+            text-align: center;
+        }
+        .button-container button:hover {
+            background-color: #333;
+        }
+        .button-container button span {
+            display: inline-block;
+            max-width: 90%;
+            text-overflow: ellipsis;
+            overflow: hidden;
+            white-space: nowrap;
+        }
+
+        /* Animation delay for each item */
+        #qr-details {
+            animation-delay: 0.3s;
+        }
+
+        .button-container button:nth-child(1) {
+            animation-delay: 0.6s;
+        }
+
+        .button-container button:nth-child(2) {
+            animation-delay: 0.9s;
+        }
+
+        .button-container button:nth-child(3) {
+            animation-delay: 1.2s;
+        }
+
+    </style>
+</head>
+<body>
+    <h1>QR Code Scanner</h1>
+    <div id="camera-select-container">
+        <select id="camera-select" onchange="switchCamera()">
+            <option value="">Select a camera...</option>
+        </select>
+    </div>
+    
+    <div id="scanner-container">
+        <video id="video" autoplay=""></video>
+        <div id="overlay">
+            <div class="corner top-left"></div>
+            <div class="corner top-right"></div>
+            <div class="corner bottom-left"></div>
+            <div class="corner bottom-right"></div>
+        </div>
+        <div id="scan-line"></div>
+    </div>
+
+    <div id="qr-details">
+        <p><span>QR-Code content:</span> <span id="qr-url" class="qr-text">Loading...</span></p>
+        <p><span>Last Scanned:</span> <span id="qr-time">Loading...</span></p>
+    </div>
+
+    <div class="button-container">
+        <button id="save-btn" onclick="saveQRCode()"><span>Save</span></button>
+        <button id="go-btn" onclick="goToPage()"><span>Go to page</span></button>
+        <button id="share-btn" onclick="shareQRCode()"><span>Share</span></button>
+    </div>
+
+    <script src="../../../cdn.jsdelivr.net/npm/jsqr/dist/jsQR.js"></script>
+    <script>
+        const video = document.getElementById('video');
+        const cameraSelect = document.getElementById('camera-select');
+        const qrUrl = document.getElementById('qr-url');
+        const qrTime = document.getElementById('qr-time');
+        const qrDetails = document.getElementById('qr-details');
+        const buttonContainer = document.querySelector('.button-container');
+        let currentStream;
+        let cameras = [];
+        let lastScanTime = null;
+        let scannedData = {};
+
+        // Function to get cameras
+        async function getCameras() {
+            try {
+                const devices = await navigator.mediaDevices.enumerateDevices();
+                cameras = devices.filter(device => device.kind === 'videoinput');
+                
+                cameras.forEach(camera => {
+                    const option = document.createElement('option');
+                    option.value = camera.deviceId;
+                    option.text = camera.label || `Camera ${camera.deviceId}`;
+                    cameraSelect.appendChild(option);
+                });
+
+                let defaultCamera = cameras.find(camera => camera.label.toLowerCase().includes('back')) || cameras[0];
+                
+                cameraSelect.value = defaultCamera.deviceId;
+                switchCamera(); // Activate selected camera
+            } catch (err) {
+                output.innerText = 'Error getting cameras: ' + err.message;
+            }
+        }
+
+        // Switch camera
+        async function switchCamera() {
+            if (currentStream) {
+                currentStream.getTracks().forEach(track => track.stop());
+            }
+
+            const deviceId = cameraSelect.value;
+            const constraints = {
+                video: {
+                    deviceId: deviceId ? { exact: deviceId } : undefined
+                }
+            };
+
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia(constraints);
+                currentStream = stream;
+                video.srcObject = stream;
+            } catch (err) {
+                output.innerText = 'Could not start the camera: ' + err.message;
+            }
+        }
+
+        // QR Code Scanner
+        const canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d');
+        video.addEventListener('play', () => {
+            const scanInterval = setInterval(() => {
+                canvas.width = video.videoWidth;
+                canvas.height = video.videoHeight;
+                ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+                const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+                const code = jsQR(imageData.data, canvas.width, canvas.height);
+                if (code) {
+                    clearInterval(scanInterval);
+                    const { data, timestamp, metadata } = code;
+                    qrUrl.innerText = data || "No URL found";
+                    qrTime.innerText = new Date().toLocaleString();
+                    
+                    scannedData = { data, timestamp, metadata };
+
+                    // Show QR Details and Buttons with delays
+                    qrDetails.style.display = 'block';
+                    buttonContainer.style.display = 'flex';
+                }
+            }, 100);
+        });
+
+        // Initial load of cameras
+        getCameras();
+
+        // Save QR Code and Metadata
+        function saveQRCode() {
+            const text = `
+QR Code Data: ${scannedData.data}
+Timestamp: ${qrTime.innerText}
+            `;
+            const blob = new Blob([text], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = 'qr_code_info.txt';
+            link.click();
+        }
+
+        // Open QR Code URL
+        function goToPage() {
+            window.open(scannedData.data, '_blank');
+        }
+
+
+            // Share QR Code and Info
+        function shareQRCode() {
+            const shareData = {
+                title: 'QR Code Info',
+                text: `QR Code Data: ${scannedData.data}\nTimestamp: ${qrTime.innerText}`,
+                url: scannedData.data
+            };
+            navigator.share(shareData);
+        }
+    </script>
+
+</body></html>

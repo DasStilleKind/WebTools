@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Color Inverter</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            background-color: #2c2c2c;
+            font-family: 'Roboto', sans-serif;
+            color: #f1f1f1;
+            margin: 0;
+            padding: 0;
+        }
+
+        h1 {
+            text-align: center;
+            margin-top: 40px;
+            color: #fff;
+        }
+
+        .container {
+            margin: 30px auto;
+            padding: 40px;
+            background-color: #333;
+            color: #ccc;
+            width: 80%;
+            max-width: 600px;
+            text-align: center;
+            border-radius: 16px;
+            box-shadow: 0 0 12px rgba(255, 255, 255, 0.1);
+        }
+
+        .upload-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 16px;
+            margin: 20px 0;
+        }
+
+        #imageName {
+            font-size: 14px;
+            color: #bbb;
+        }
+
+        #imagePreview {
+            max-width: 50px;
+            max-height: 50px;
+            border-radius: 5px;
+            display: none;
+        }
+
+        input[type="file"] {
+            display: none;
+        }
+
+        button {
+            display: inline-block;
+            margin: 10px 8px;
+            background-color: #4CAF50; /* Grüner Farbton */
+            color: #fff;
+            border: none;
+            padding: 14px 28px;
+            font-size: 16px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #45a049; /* Dunkleres Grün für Hover-Effekt */
+        }
+
+        canvas {
+            display: block;
+            margin: 30px auto;
+            max-width: 90%;
+            border-radius: 12px;
+            box-shadow: 0 0 12px rgba(255, 255, 255, 0.1);
+        }
+    </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Image Color Inverter</h1>
+    <div class="upload-container">
+      <button onclick="document.getElementById('imageInput').click()">Upload Image</button>
+      <input type="file" id="imageInput" accept="image/*" onchange="displayImageName()">
+      <img id="imagePreview">
+      <div id="imageName">No file chosen</div>
+    </div>
+    <button onclick="recolorImage()">Invert Colors</button>
+    <button onclick="downloadImage()">Download</button>
+    <canvas id="canvas"></canvas>
+  </div>
+
+  <script>
+    function displayImageName() {
+      const fileInput = document.getElementById('imageInput');
+      const fileName = fileInput.files.length > 0 ? fileInput.files[0].name : "No file chosen";
+      document.getElementById('imageName').textContent = fileName;
+
+      const file = fileInput.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          const imagePreview = document.getElementById('imagePreview');
+          imagePreview.src = e.target.result;
+          imagePreview.style.display = 'block';
+        }
+        reader.readAsDataURL(file);
+      }
+    }
+
+    function recolorImage() {
+      const file = document.getElementById('imageInput').files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = function(event) {
+        const img = new Image();
+        img.src = event.target.result;
+        img.onload = function() {
+          const canvas = document.getElementById('canvas');
+          const ctx = canvas.getContext('2d');
+          canvas.width = img.width;
+          canvas.height = img.height;
+          ctx.drawImage(img, 0, 0);
+
+          const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+          const data = imageData.data;
+
+          for (let i = 0; i < data.length; i += 4) {
+            data[i] = 255 - data[i];        // Red
+            data[i + 1] = 255 - data[i + 1];  // Green
+            data[i + 2] = 255 - data[i + 2];  // Blue
+          }
+
+          ctx.putImageData(imageData, 0, 0);
+        }
+      }
+      reader.readAsDataURL(file);
+    }
+
+    function downloadImage() {
+      const canvas = document.getElementById('canvas');
+      const fileInput = document.getElementById('imageInput');
+      const fileName = fileInput.files.length > 0 ? fileInput.files[0].name : 'image';
+      const fileBaseName = fileName.split('.')[0];
+      const downloadName = `inverted-img-${fileBaseName}.png`;
+
+      const link = document.createElement('a');
+      link.download = downloadName;
+      link.href = canvas.toDataURL();
+      link.click();
+    }
+  </script>
+</body>
+</html>
