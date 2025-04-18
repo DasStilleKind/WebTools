@@ -1,131 +1,143 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>/\Lobby/\</title>
-    <style>
-        body {
-            font-family: 'Arial', sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #1e1e1e; /* Dunkler Hintergrund */
-            color: #f0f0f0;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: flex-start;
-            min-height: 100vh;
-            padding: 20px;
-        }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Lobby</title>
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #1e1e1e;
+      color: #f0f0f0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+      padding: 20px;
+    }
 
-        h1 {
-            margin: 20px 0 20px 0;
-            color: #ffffff;
-            font-size: 28px;
-            text-align: center;
-            animation: fadeIn 1s ease-out;
-        }
+    h1 {
+      margin: 20px 0;
+      font-size: 28px;
+      text-align: center;
+      animation: fadeIn 1s ease-out;
+    }
 
-        @keyframes fadeIn {
-            0% { opacity: 0; }
-            100% { opacity: 1; }
-        }
+    @keyframes fadeIn {
+      0% { opacity: 0; }
+      100% { opacity: 1; }
+    }
 
-        .category {
-            margin-bottom: 40px; /* Abstand zwischen den Kategorien */
-            width: 100%;
-            max-width: 600px;
-            text-align: center;
-        }
+    .category {
+      margin-bottom: 40px;
+      width: 100%;
+      max-width: 800px;
+      text-align: center;
+    }
 
-        .category h2 {
-            color: #fff;
-            margin-bottom: 20px;
-        }
+    .category h2 {
+      margin-bottom: 15px;
+    }
 
-        .button-container {
-            display: flex;
-            flex-direction: column;
-            gap: 15px; /* Gleicher Abstand zwischen den Buttons */
-        }
+    .button-container {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
 
-        button {
-            background-color: #dbdbdb;
-            color: #505964;
-            border: none;
-            padding: 15px;
-            font-size: 18px;
-            border-radius: 10px;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-            width: 100%;
-            max-width: 250px;
-            margin: 0 auto; /* Buttons mittig */
-        }
+    button {
+      background-color: #dbdbdb;
+      color: #505964;
+      border: none;
+      padding: 15px;
+      font-size: 18px;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: 0.3s;
+      width: 100%;
+      max-width: 300px;
+      margin: 0 auto;
+    }
 
-        button:hover {
-            background-color: #dbdbdb;
-        }
-        .b4-category-list-items {
-            background-color: #1a1a1a;
-            border-radius: 10px;
-            width: 100%;
-            height: 100%;
+    button:hover {
+      background-color: #cfcfcf;
+    }
 
-        }
-        .extrna-center-styleing-list {
+    .responsive-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 40px;
+    }
 
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100%; /* full height of the viewport */
+    /* Desktop Styles */
+    @media (min-width: 768px) {
+      .button-container {
+        flex-direction: row;
+        justify-content: center;
+        flex-wrap: wrap;
+      }
 
+      button {
+        max-width: none;
+        width: 200px;
+      }
 
-        }
-    </style>
+      .responsive-grid {
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: center;
+        align-items: flex-start;
+        gap: 60px;
+      }
+
+      .category {
+        flex: 1 1 300px;
+        max-width: 300px;
+      }
+    }
+  </style>
 </head>
 <body>
-    <h1>Welcome to the Lobby</h1>
-    <div id="categroy-lioist" class="b4-category-list-items">
+  <h1>Welcome to the Lobby</h1>
 
-
+  <div class="responsive-grid">
     <!-- QR-Code / Bar-Code Section -->
-        <div class="extrna-center-styleing-list">
-            <div class="category">
-                <h2>QR-Code / Bar-Code</h2>
-                <div class="button-container">
-                    <button onclick="location.href='Tools/QR-Code/Creator.html'">QR Code Generator</button>
-                    <button onclick="location.href='Tools/QR-Code/Scanner.html'">QR Code Scanner</button>
-                    <button onclick="location.href='Tools/QR-Code/'">Coming Soon</button>
-                </div>
-            </div>
-
-            <!-- Foto Tools Section -->
-            <div class="category">
-                <h2>Image Tools</h2>
-                <div class="button-container">
-                    <button onclick="location.href='Tools/Image/data-extractor.html'">Data Extractor</button>
-                    <button onclick="location.href='Tools/Image/inverter.html'">Image Inverter</button>
-                    <button onclick="location.href='Tools/Image/eecolor.html'">Image Recolor</button>
-                </div>
-            </div>
-
-            <!-- Coming Soon Section -->
-            <div class="category">
-                <h2>Coming Soon</h2>
-                <div class="button-container">
-                    <button onclick="nope()">Coming Soon</button>
-                    <button onclick="nope()">Coming Soon</button>
-                    <button onclick="nope()">Coming Soon</button>
-                </div>
-            </div>
-        </div>
+    <div class="category">
+      <h2>QR-Code / Bar-Code</h2>
+      <div class="button-container">
+        <button onclick="location.href='Tools/QR-Code/Creator.html'">QR Code Generator</button>
+        <button onclick="location.href='Tools/QR-Code/Scanner.html'">QR Code Scanner</button>
+        <button onclick="location.href='Tools/QR-Code/'">Coming Soon</button>
+      </div>
     </div>
-    <script>
-        function nope() {
-            alart('This Deature is still in develement')
-        }
-    </script>
+
+    <!-- Foto Tools Section -->
+    <div class="category">
+      <h2>Image Tools</h2>
+      <div class="button-container">
+        <button onclick="location.href='Tools/Image/data-extractor.html'">Data Extractor</button>
+        <button onclick="location.href='Tools/Image/inverter.html'">Image Inverter</button>
+        <button onclick="location.href='Tools/Image/recolor.html'">Image Recolor</button>
+      </div>
+    </div>
+
+    <!-- Coming Soon Section -->
+    <div class="category">
+      <h2>Coming Soon</h2>
+      <div class="button-container">
+        <button onclick="nope()">Coming Soon</button>
+        <button onclick="nope()">Coming Soon</button>
+        <button onclick="nope()">Coming Soon</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function nope() {
+      alert('This feature is still in development');
+    }
+  </script>
 </body>
 </html>
