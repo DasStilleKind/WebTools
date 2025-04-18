@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Color Switcher</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 50px auto;
+            background-color: #1e1e1e;
+            color: white;
+        }
+        .container {
+            max-width: 600px;
+            margin: auto;
+            padding: 20px;
+            background: #1e1e1e;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
+        }
+        input, button {
+            margin: 10px;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+        }
+        button {
+            background: #4CAF50;
+            color: white;
+            cursor: pointer;
+        }
+        button:hover {
+            background: #194f1b;
+        }
+        canvas {
+            display: block;
+            margin: 20px auto;
+            max-width: 100%;
+            border-radius: 10px;
+        }
+        .color-preview {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: inline-block;
+            border: 2px solid white;
+            cursor: pointer;
+            position: relative;
+        }
+        .color-info {
+            margin-top: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        .color-code {
+            background: #333;
+            padding: 5px 10px;
+            border-radius: 5px;
+        }
+        .upload-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            justify-content: center;
+        }
+        #imageName {
+            font-size: 14px;
+            color: #bbb;
+        }
+        #imagePreview {
+            max-width: 50px;
+            max-height: 50px;
+            border-radius: 5px;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Image Color Switcher</h1>
+        <div class="upload-container">
+            <button onclick="document.getElementById('imageInput').click()">Upload Image</button>
+            <input type="file" id="imageInput" accept="image/*" style="display: none;" onchange="displayImageName()">
+            <img id="imagePreview">
+            <div id="imageName">No file chosen</div>
+        </div>
+        <input type="color" id="colorInput" onchange="updateColorPreview()" style="display: none;">
+        <div class="color-info">
+            <div class="color-preview" id="colorPreview" onclick="openColorPicker()"></div>
+            <div class="color-code" id="colorHex">#FFFFFF</div>
+        </div>
+        <button onclick="recolorImage()">Recolor</button>
+        <button onclick="downloadImage()">Download</button>
+        <br>
+        <canvas id="canvas"></canvas>
+    </div>
+    
+    <script>
+        function openColorPicker() {
+            const colorInput = document.getElementById('colorInput');
+            colorInput.click();
+        }
+
+        function updateColorPreview() {
+            const color = document.getElementById('colorInput').value;
+            document.getElementById('colorHex').textContent = color;
+            document.getElementById('colorPreview').style.backgroundColor = color;
+        }
+
+        function displayImageName() {
+            const fileInput = document.getElementById('imageInput');
+            const fileName = fileInput.files.length > 0 ? fileInput.files[0].name : "No file chosen";
+            document.getElementById('imageName').textContent = fileName;
+            
+            const file = fileInput.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const imagePreview = document.getElementById('imagePreview');
+                    imagePreview.src = e.target.result;
+                    imagePreview.style.display = 'block';
+                }
+                reader.readAsDataURL(file);
+            }
+        }
+
+        function recolorImage() {
+            const file = document.getElementById('imageInput').files[0];
+            const color = document.getElementById('colorInput').value;
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(event) {
+                const img = new Image();
+                img.src = event.target.result;
+                img.onload = function() {
+                    const canvas = document.getElementById('canvas');
+                    const ctx = canvas.getContext('2d');
+                    canvas.width = img.width;
+                    canvas.height = img.height;
+                    ctx.drawImage(img, 0, 0);
+                    
+                    const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+                    const data = imageData.data;
+                    const [rT, gT, bT] = hexToRgb(color);
+                    
+                    for (let i = 0; i < data.length; i += 4) {
+                        const avg = (data[i] + data[i + 1] + data[i + 2]) / 3;
+                        data[i] = avg * (rT / 255);
+                        data[i + 1] = avg * (gT / 255);
+                        data[i + 2] = avg * (bT / 255);
+                    }
+                    
+                    ctx.putImageData(imageData, 0, 0);
+                }
+            }
+            reader.readAsDataURL(file);
+        }
+
+        function hexToRgb(hex) {
+            let bigint = parseInt(hex.substring(1), 16);
+            return [(bigint >> 16) & 255, (bigint >> 8) & 255, bigint & 255];
+        }
+
+        function downloadImage() {
+    const canvas = document.getElementById('canvas');
+    const fileInput = document.getElementById('imageInput');
+    const fileName = fileInput.files.length > 0 ? fileInput.files[0].name : 'image';
+    const colorHex = document.getElementById('colorInput').value;
+
+    // Extract the file name without the extension
+    const fileBaseName = fileName.split('.')[0];
+    
+    // Generate a custom download name
+    const downloadName = `recolored-img-${fileBaseName}-${colorHex.slice(1)}.png`;
+
+    const link = document.createElement('a');
+    link.download = downloadName;  // Use the generated name
+    link.href = canvas.toDataURL();
+    link.click();
+}
+
+    </script>
+</body>
+</html>
