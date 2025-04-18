@@ -1,301 +1,298 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Image Metadata and PDF Generator</title>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <style>
-        body {
-            font-family: 'Roboto', sans-serif;
-            background-color: #2c2c2c;
-            color: #f1f1f1;
-            margin: 0;
-            padding: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-        }
-
-        .container {
-            width: 90%;
-            max-width: 1200px;
-            padding: 20px;
-            background-color: #333;
-            border-radius: 10px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-            overflow: auto;
-        }
-
-        h1 {
-            text-align: center;
-            margin-bottom: 20px;
-            color: #fff;
-        }
-
-        #file-input-container {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            border: 2px dashed #4CAF50;
-            padding: 30px;
-            margin: 20px 0;
-            border-radius: 10px;
-            cursor: pointer;
-            background-color: #444;
-            position: relative;
-        }
-
-        #file-input-container input {
-            display: none;
-        }
-
-        #file-input-container i {
-            font-size: 50px;
-            color: #4CAF50;
-        }
-
-        #upload-button {
-            display: inline-block;
-            padding: 15px 30px;
-            background-color: #4CAF50;
-            color: white;
-            font-size: 16px;
-            border: none;
-            border-radius: 10px;
-            cursor: pointer;
-            margin-top: 10px;
-        }
-
-        #upload-button i {
-            margin-right: 8px;
-        }
-
-        .metadata-container {
-            margin-top: 30px;
-            background-color: #444;
-            padding: 20px;
-            border-radius: 10px;
-            color: #fff;
-        }
-
-        .metadata-container p {
-            margin: 8px 0;
-        }
-
-        .btn-container {
-            margin-top: 20px;
-            display: flex;
-            justify-content: space-between;
-        }
-
-        button {
-            background-color: #4CAF50;
-            color: #fff;
-            padding: 12px 20px;
-            font-size: 16px;
-            border: none;
-            border-radius: 10px;
-            cursor: pointer;
-            width: 48%;
-            transition: background-color 0.3s;
-        }
-
-        button:hover {
-            background-color: #45a049;
-        }
-
-        .image-preview {
-            text-align: center;
-            margin-top: 20px;
-        }
-
-        .image-preview img {
-            max-width: 100%;
-            max-height: 400px;
-            margin: 20px 0;
-            border-radius: 10px;
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Image Metadata and PDF Generator</title>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"/>
+  <style>
+    body {
+      font-family: 'Roboto', sans-serif;
+      background-color: #2c2c2c;
+      color: #f1f1f1;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+    }
+    .container {
+      width: 90%;
+      max-width: 1200px;
+      padding: 20px;
+      background-color: #333;
+      border-radius: 10px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+      overflow: auto;
+    }
+    h1 {
+      text-align: center;
+      margin-bottom: 20px;
+      color: #fff;
+    }
+    #file-input-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      border: 2px dashed #4CAF50;
+      padding: 30px;
+      margin: 20px 0;
+      border-radius: 10px;
+      cursor: pointer;
+      background-color: #444;
+      position: relative;
+    }
+    #file-input-container input {
+      display: none;
+    }
+    #file-input-container i {
+      font-size: 50px;
+      color: #4CAF50;
+    }
+    #upload-button {
+      display: inline-block;
+      padding: 15px 30px;
+      background-color: #4CAF50;
+      color: white;
+      font-size: 16px;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+    #upload-button i {
+      margin-right: 8px;
+    }
+    .metadata-container {
+      margin-top: 30px;
+      background-color: #444;
+      padding: 20px;
+      border-radius: 10px;
+      color: #fff;
+    }
+    .metadata-container p {
+      margin: 8px 0;
+    }
+    .btn-container {
+      margin-top: 20px;
+      display: flex;
+      justify-content: space-between;
+    }
+    button {
+      background-color: #4CAF50;
+      color: #fff;
+      padding: 12px 20px;
+      font-size: 16px;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      width: 48%;
+      transition: background-color 0.3s;
+    }
+    button:hover {
+      background-color: #45a049;
+    }
+    .image-preview {
+      text-align: center;
+      margin-top: 20px;
+    }
+    .image-preview img {
+      max-width: 100%;
+      max-height: 400px;
+      margin: 20px 0;
+      border-radius: 10px;
+    }
+  </style>
 </head>
 <body>
 
-    <div class="container">
-        <h1>Image Metadata and PDF Generator</h1>
+  <div class="container">
+    <h1>Image Metadata and PDF Generator</h1>
 
-        <div id="file-input-container">
-            <input type="file" id="file-input" accept="image/*">
-            <label for="file-input">
-                <i class="fas fa-upload"></i>
-            </label>
-        </div>
-
-        <div class="metadata-container" id="metadata-container" style="display: none;">
-            <h3>Image Metadata:</h3>
-            <p><strong>File Name:</strong> <span id="file-name"></span></p>
-            <p><strong>File Size:</strong> <span id="file-size"></span></p>
-            <p><strong>Resolution:</strong> <span id="resolution"></span></p>
-            <p><strong>Device:</strong> <span id="device"></span></p>
-            <p><strong>Author:</strong> <span id="author"></span></p>
-            <p><strong>Copyright:</strong> <span id="copyright"></span></p>
-            <p><strong>Image Date:</strong> <span id="image-date"></span></p>
-            <p><strong>Camera Make:</strong> <span id="make"></span></p>
-            <p><strong>Camera Model:</strong> <span id="model"></span></p>
-            <p><strong>Exposure Time:</strong> <span id="exposure-time"></span></p>
-            <p><strong>F-Stop (Aperture):</strong> <span id="f-stop"></span></p>
-            <p><strong>ISO:</strong> <span id="iso"></span></p>
-            <p><strong>Flash:</strong> <span id="flash"></span></p>
-            <p><strong>Date/Time Original:</strong> <span id="datetime-original"></span></p>
-            <p><strong>GPS Coordinates:</strong> <span id="gps-coordinates"></span></p>
-        </div>
-
-        <div class="image-preview" id="image-preview" style="display: none;">
-            <img id="uploaded-image" alt="Uploaded Image">
-        </div>
-
-        <div class="btn-container">
-            <button id="share-button" style="display: none;">
-                <i class="fas fa-share-alt"></i> Share
-            </button>
-            <button id="save-button" style="display: none;">
-                <i class="fas fa-save"></i> Save as PDF
-            </button>
-        </div>
+    <div id="file-input-container">
+      <input type="file" id="file-input" accept="image/*">
+      <label for="file-input">
+        <i class="fas fa-upload"></i>
+      </label>
     </div>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/exif-js/2.3.0/exif.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <div class="metadata-container" id="metadata-container" style="display: none;">
+      <h3>Image Metadata:</h3>
+      <p><strong>File Name:</strong> <span id="file-name"></span></p>
+      <p><strong>File Size:</strong> <span id="file-size"></span></p>
+      <p><strong>Resolution:</strong> <span id="resolution"></span></p>
+      <p><strong>Device:</strong> <span id="device"></span></p>
+      <p><strong>Author:</strong> <span id="author"></span></p>
+      <p><strong>Copyright:</strong> <span id="copyright"></span></p>
+      <p><strong>Image Date:</strong> <span id="image-date"></span></p>
+      <p><strong>Camera Make:</strong> <span id="make"></span></p>
+      <p><strong>Camera Model:</strong> <span id="model"></span></p>
+      <p><strong>Exposure Time:</strong> <span id="exposure-time"></span></p>
+      <p><strong>F-Stop (Aperture):</strong> <span id="f-stop"></span></p>
+      <p><strong>ISO:</strong> <span id="iso"></span></p>
+      <p><strong>Flash:</strong> <span id="flash"></span></p>
+      <p><strong>Date/Time Original:</strong> <span id="datetime-original"></span></p>
+      <p><strong>GPS Coordinates:</strong> <span id="gps-coordinates"></span></p>
+    </div>
 
-    <script>
-        const fileInput = document.getElementById('file-input');
-        const metadataContainer = document.getElementById('metadata-container');
-        const imagePreview = document.getElementById('image-preview');
-        const uploadedImage = document.getElementById('uploaded-image');
-        const shareButton = document.getElementById('share-button');
-        const saveButton = document.getElementById('save-button');
-        const uploadButton = document.getElementById('upload-button');
-        const fileInputContainer = document.getElementById('file-input-container');
+    <div class="image-preview" id="image-preview" style="display: none;">
+      <img id="uploaded-image" alt="Uploaded Image">
+    </div>
 
-        fileInput.addEventListener('change', (e) => {
-            const file = e.target.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function(event) {
-                    const img = new Image();
-                    img.src = event.target.result;
+    <div class="btn-container">
+      <button id="share-button" style="display: none;">
+        <i class="fas fa-share-alt"></i> Share
+      </button>
+      <button id="save-button" style="display: none;">
+        <i class="fas fa-save"></i> Save as PDF
+      </button>
+    </div>
+  </div>
 
-                    img.onload = function() {
-                        displayImageData(img, file);
-                    };
-                };
-                reader.readAsDataURL(file);
-            }
-        });
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/exif-js/2.3.0/exif.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
-        fileInputContainer.addEventListener('dragover', (e) => {
-            e.preventDefault();
-            fileInputContainer.style.backgroundColor = '#555';
-        });
+  <script>
+    const fileInput = document.getElementById('file-input');
+    const metadataContainer = document.getElementById('metadata-container');
+    const imagePreview = document.getElementById('image-preview');
+    const uploadedImage = document.getElementById('uploaded-image');
+    const shareButton = document.getElementById('share-button');
+    const saveButton = document.getElementById('save-button');
+    const fileInputContainer = document.getElementById('file-input-container');
 
-        fileInputContainer.addEventListener('dragleave', () => {
-            fileInputContainer.style.backgroundColor = '#444';
-        });
+    fileInput.addEventListener('change', (e) => {
+      const file = e.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function(event) {
+          const img = new Image();
+          img.src = event.target.result;
 
-        fileInputContainer.addEventListener('drop', (e) => {
-            e.preventDefault();
-            fileInputContainer.style.backgroundColor = '#444';
+          img.onload = function() {
+            displayImageData(img, file);
+          };
+        };
+        reader.readAsDataURL(file);
+      }
+    });
 
-            const file = e.dataTransfer.files[0];
-            fileInput.files = e.dataTransfer.files; // Set the dropped file to the file input
-            const reader = new FileReader();
-            reader.onload = function(event) {
-                const img = new Image();
-                img.src = event.target.result;
+    fileInputContainer.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      fileInputContainer.style.backgroundColor = '#555';
+    });
 
-                img.onload = function() {
-                    displayImageData(img, file);
-                };
-            };
-            reader.readAsDataURL(file);
-        });
+    fileInputContainer.addEventListener('dragleave', () => {
+      fileInputContainer.style.backgroundColor = '#444';
+    });
 
-        function displayImageData(image, file) {
-            // Display image preview
-            uploadedImage.src = image.src;
-            imagePreview.style.display = 'block';
+    fileInputContainer.addEventListener('drop', (e) => {
+      e.preventDefault();
+      fileInputContainer.style.backgroundColor = '#444';
 
-            // Extract and display EXIF metadata
-            EXIF.getData(file, function() {
-                const exifData = EXIF.getAllTags(this);
+      const file = e.dataTransfer.files[0];
+      fileInput.files = e.dataTransfer.files;
+      const reader = new FileReader();
+      reader.onload = function(event) {
+        const img = new Image();
+        img.src = event.target.result;
 
-                document.getElementById('file-name').textContent = file.name;
-                document.getElementById('file-size').textContent = (file.size / 1024).toFixed(2) + ' KB';
-                document.getElementById('resolution').textContent = ${image.width} x ${image.height};
-                document.getElementById('device').textContent = exifData.Model || 'Unknown';
-                document.getElementById('author').textContent = exifData.Artist || 'Unknown';
-                document.getElementById('copyright').textContent = exifData.Copyright || 'Not available';
-                document.getElementById('image-date').textContent = exifData.DateTime || 'Unknown';
-                document.getElementById('make').textContent = exifData.Make || 'Unknown';
-                document.getElementById('model').textContent = exifData.Model || 'Unknown';
-                document.getElementById('exposure-time').textContent = exifData.ExposureTime || 'Unknown';
-                document.getElementById('f-stop').textContent = exifData.FNumber || 'Unknown';
-                document.getElementById('iso').textContent = exifData.ISO || 'Unknown';
-                document.getElementById('flash').textContent = exifData.Flash ? 'Yes' : 'No';
-                document.getElementById('datetime-original').textContent = exifData.DateTimeOriginal || 'Unknown';
+        img.onload = function() {
+          displayImageData(img, file);
+        };
+      };
+      reader.readAsDataURL(file);
+    });
 
-                // GPS Data
-                const gpsData = exifData.GPSLatitude && exifData.GPSLongitude ? 
-                    Latitude: ${exifData.GPSLatitude}, Longitude: ${exifData.GPSLongitude} : 
-                    'No GPS Data';
+    function displayImageData(image, file) {
+      uploadedImage.src = image.src;
+      imagePreview.style.display = 'block';
 
-                document.getElementById('gps-coordinates').textContent = gpsData;
+      EXIF.getData(file, function() {
+        const exifData = EXIF.getAllTags(this);
 
-                metadataContainer.style.display = 'block';
-                shareButton.style.display = 'inline-block';
-                saveButton.style.display = 'inline-block';
-            });
-        }
+        document.getElementById('file-name').textContent = file.name;
+        document.getElementById('file-size').textContent = (file.size / 1024).toFixed(2) + ' KB';
+        document.getElementById('resolution').textContent = `${image.width} x ${image.height}`;
+        document.getElementById('device').textContent = exifData.Model || 'Unknown';
+        document.getElementById('author').textContent = exifData.Artist || 'Unknown';
+        document.getElementById('copyright').textContent = exifData.Copyright || 'Not available';
+        document.getElementById('image-date').textContent = exifData.DateTime || 'Unknown';
+        document.getElementById('make').textContent = exifData.Make || 'Unknown';
+        document.getElementById('model').textContent = exifData.Model || 'Unknown';
+        document.getElementById('exposure-time').textContent = exifData.ExposureTime || 'Unknown';
+        document.getElementById('f-stop').textContent = exifData.FNumber || 'Unknown';
+        document.getElementById('iso').textContent = exifData.ISO || 'Unknown';
+        document.getElementById('flash').textContent = exifData.Flash ? 'Yes' : 'No';
+        document.getElementById('datetime-original').textContent = exifData.DateTimeOriginal || 'Unknown';
 
-        shareButton.addEventListener('click', () => {
-            const imgData = uploadedImage.src;
-            const text = Check out this image with its metadata:\n\n${getMetadataText()};
-            window.open(mailto:?subject=Image Metadata&body=${encodeURIComponent(text)}\n${imgData});
-        });
+        const gpsData = (exifData.GPSLatitude && exifData.GPSLongitude) ?
+          `Latitude: ${exifData.GPSLatitude}, Longitude: ${exifData.GPSLongitude}` :
+          'No GPS Data';
 
-        saveButton.addEventListener('click', () => {
-            const { jsPDF } = window.jspdf;
-            const doc = new jsPDF();
+        document.getElementById('gps-coordinates').textContent = gpsData;
 
-            doc.text("Image Metadata:", 10, 10);
-            doc.text(getMetadataText(), 10, 20);
+        metadataContainer.style.display = 'block';
+        shareButton.style.display = 'inline-block';
+        saveButton.style.display = 'inline-block';
+      });
+    }
 
-            const imgData = uploadedImage.src;
-            doc.addImage(imgData, 'JPEG', 10, 40, 180, 160);
+    shareButton.addEventListener('click', () => {
+      const text = `Check out this image with its metadata:\n\n${getMetadataText()}`;
+      const imgData = uploadedImage.src;
+      window.open(`mailto:?subject=Image Metadata&body=${encodeURIComponent(text)}\n${imgData}`);
+    });
 
-            doc.save('image_metadata.pdf');
-        });
+    saveButton.addEventListener('click', () => {
+      const { jsPDF } = window.jspdf;
+      const doc = new jsPDF();
 
-        function getMetadataText() {
-            return 
-                File Name: ${document.getElementById('file-name').textContent}
-                File Size: ${document.getElementById('file-size').textContent}
-                Resolution: ${document.getElementById('resolution').textContent}
-                Device: ${document.getElementById('device').textContent}
-                Author: ${document.getElementById('author').textContent}
-                Copyright: ${document.getElementById('copyright').textContent}
-                Image Date: ${document.getElementById('image-date').textContent}
-                Camera Make: ${document.getElementById('make').textContent}
-                Camera Model: ${document.getElementById('model').textContent}
-                Exposure Time: ${document.getElementById('exposure-time').textContent}
-                F-Stop (Aperture): ${document.getElementById('f-stop').textContent}
-                ISO: ${document.getElementById('iso').textContent}
-                Flash: ${document.getElementById('flash').textContent}
-                Date/Time Original: ${document.getElementById('datetime-original').textContent}
-                GPS Coordinates: ${document.getElementById('gps-coordinates').textContent}
-            ;
-        }
-    </script>
+      const metadataLines = getMetadataText().split('\n');
+      let y = 10;
+      doc.setFontSize(12);
+      doc.text("Image Metadata:", 10, y);
+      y += 10;
+
+      metadataLines.forEach(line => {
+        doc.text(line, 10, y);
+        y += 7;
+      });
+
+      // Neue Seite für das Bild
+      doc.addPage();
+
+      const img = new Image();
+      img.src = uploadedImage.src;
+      img.onload = () => {
+        const imgWidth = 180;
+        const imgHeight = (img.height / img.width) * imgWidth;
+        doc.addImage(img, 'JPEG', 15, 20, imgWidth, imgHeight);
+        doc.save('image_metadata.pdf');
+      };
+    });
+
+    function getMetadataText() {
+      return `
+File Name: ${document.getElementById('file-name').textContent}
+File Size: ${document.getElementById('file-size').textContent}
+Resolution: ${document.getElementById('resolution').textContent}
+Device: ${document.getElementById('device').textContent}
+Author: ${document.getElementById('author').textContent}
+Copyright: ${document.getElementById('copyright').textContent}
+Image Date: ${document.getElementById('image-date').textContent}
+Camera Make: ${document.getElementById('make').textContent}
+Camera Model: ${document.getElementById('model').textContent}
+Exposure Time: ${document.getElementById('exposure-time').textContent}
+F-Stop (Aperture): ${document.getElementById('f-stop').textContent}
+ISO: ${document.getElementById('iso').textContent}
+Flash: ${document.getElementById('flash').textContent}
+Date/Time Original: ${document.getElementById('datetime-original').textContent}
+GPS Coordinates: ${document.getElementById('gps-coordinates').textContent}
+      `.trim();
+    }
+  </script>
 </body>
 </html>
