@@ -1,276 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>QR & Barcode Gen</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"/>
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #1e1e1e;
+      color: #f0f0f0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      min-height: 100vh;
+    }
 
-<!DOCTYPE html><html lang="en"><head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>QR & Barcode Generator</title>
-    <link rel="stylesheet" href="../../../cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <style>
-        body {
-            font-family: 'Arial', sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #1e1e1e;
-            color: #f0f0f0;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: flex-start;
-            height: 100vh;
-            overflow: hidden;
-        }
+    h1 {
+      margin: 60px 0 20px 0;
+      font-size: 28px;
+      animation: fadeIn 1s ease-out;
+      text-align: center;
+    }
 
-        h1 {
-            margin: 60px 0 20px 0;
-            color: #ffffff;
-            font-size: 28px;
-            text-align: center;
-            animation: fadeIn 1s ease-out;
-        }
+    @keyframes fadeIn {
+      0% { opacity: 0; }
+      100% { opacity: 1; }
+    }
 
-        @keyframes fadeIn {
-            0% { opacity: 0; }
-            100% { opacity: 1; }
-        }
+    .top-right {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      background-color: #4CAF50;
+      color: #fff;
+      border: none;
+      padding: 10px 20px;
+      font-size: 14px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+      z-index: 10;
+    }
 
-        .top-right {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            background-color: #4CAF50;
-            color: #fff;
-            border: none;
-            padding: 10px 20px;
-            font-size: 14px;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: background-color 0.3s;
-        }
+    .top-right:hover {
+      background-color: #45a049;
+    }
 
-        .top-right:hover {
-            background-color: #45a049;
-        }
+    #tab-container {
+      display: flex;
+      justify-content: center;
+      margin-top: 20px;
+      gap: 15px;
+    }
 
-        #tab-container {
-            display: flex;
-            justify-content: center;
-            margin-top: 20px;
-        }
+    .tab {
+      background-color: #333;
+      padding: 10px 20px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
 
-        .tab {
-            background-color: #333;
-            padding: 10px 20px;
-            margin: 0 10px;
-            color: #fff;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: background-color 0.3s;
-        }
+    .tab:hover,
+    .tab.active {
+      background-color: #4CAF50;
+    }
 
-        .tab:hover, .tab.active {
-            background-color: #4CAF50;
-        }
+    .content {
+      display: none;
+      width: 90%;
+      max-width: 400px;
+      margin-top: 30px;
+      animation: fadeInContent 0.8s ease-out;
+    }
 
-        .content {
-            display: none;
-            width: 80%;
-            max-width: 400px;
-            margin-top: 20px;
-            text-align: center;
-            animation: fadeInContent 0.8s ease-out;
-        }
+    .content.active {
+      display: block;
+    }
 
-        .content.active {
-            display: block;
-        }
+    @keyframes fadeInContent {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
 
-        @keyframes fadeInContent {
-            0% { opacity: 0; transform: translateY(20px); }
-            100% { opacity: 1; transform: translateY(0); }
-        }
+    input {
+      width: 100%;
+      padding: 12px;
+      font-size: 16px;
+      border-radius: 8px;
+      border: 2px solid #4CAF50;
+      background-color: #333;
+      color: #fff;
+      margin-bottom: 20px;
+    }
 
-        input {
-            width: calc(100% - 40px);
-            max-width: 400px;
-            padding: 12px;
-            margin: 0 auto 15px auto;
-            font-size: 16px;
-            border-radius: 8px;
-            border: 2px solid #4CAF50;
-            background-color: #333;
-            color: #fff;
-            transition: 0.3s;
-            display: block;
-        }
+    input:focus {
+      outline: none;
+      background-color: #444;
+      border-color: #6aff6a;
+    }
 
-        input:focus {
-            border-color: #4CAF50;
-            outline: none;
-            background-color: #444;
-        }
+    .button-container {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
 
-        .button-container {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 15px;
-            margin-top: 10px;
-        }
+    button {
+      flex: 1;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      padding: 12px 0;
+      font-size: 16px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
 
-        button {
-            background-color: #4CAF50;
-            color: #fff;
-            border: none;
-            padding: 12px 0;
-            font-size: 16px;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-            width: 48%;
-            text-align: center;
-        }
+    button:hover {
+      background-color: #45a049;
+    }
 
-        button:hover {
-            background-color: #45a049;
-        }
+    button i {
+      margin-right: 8px;
+    }
 
-        button i {
-            margin-right: 8px;
-        }
+    .canvas-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-top: 10px;
+    }
 
-        canvas {
-            background: #fff;
-            padding: 10px;
-            border-radius: 10px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-            max-width: 80%;
-            height: auto;
-        }
+    canvas {
+      background-color: #fff;
+      padding: 10px;
+      border-radius: 10px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+      display: block;
+      margin-top: 10px;
+      max-width: 100%;
+    }
 
-        .canvas-container {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            margin-top: 20px;
-            flex-direction: column;
-        }
+    .download-btn {
+      background-color: #ff9800;
+      margin-top: 20px;
+    }
 
-        .download-btn {
-            background-color: #ff9800;
-            margin-top: 20px;
-            padding: 12px 0;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .download-btn:hover {
-            background-color: #f57c00;
-        }
-
-        .download-btn i {
-            margin-right: 8px;
-        }
-    </style>
+    .download-btn:hover {
+      background-color: #f57c00;
+    }
+  </style>
 </head>
 <body>
-    <button class="top-right" onclick="window.location.href='Scanner.html'">
-        <i class="fas fa-qrcode"></i> QR Scanner
-    </button>
-    <h1>QR & Barcode Generator</h1>
-    <div id="tab-container">
-        <div class="tab active" onclick="switchTab('qr')">QR Code</div>
-        <div class="tab" onclick="switchTab('barcode')">Barcode</div>
+
+  <button class="top-right" onclick="window.location.href='https://Web-Tools.short.gy/QR-Code_Scanner'">
+    <i class="fas fa-qrcode"></i> QR Scanner
+  </button>
+
+  <h1>QR & Barcode Generator</h1>
+
+  <div id="tab-container">
+    <div class="tab active" onclick="switchTab('qr')">QR Code</div>
+    <div class="tab" onclick="switchTab('barcode')">Barcode</div>
+  </div>
+
+  <!-- QR Code Generator -->
+  <div id="qr" class="content active">
+    <input id="qr-input" type="text" placeholder="Enter text or URL for QR Code" />
+    <div class="button-container">
+      <button onclick="generateQRCode()"><i class="fas fa-qrcode"></i>Generate</button>
     </div>
-
-    <!-- QR Code Generator -->
-    <div id="qr" class="content active">
-        <input id="qr-input" type="text" placeholder="Enter text or URL for QR Code">
-        <div class="button-container">
-            <button onclick="generateQRCode()"><i class="fas fa-qrcode"></i>Generate QR Code</button>
-            <button class="download-btn" onclick="downloadQRCode()" style="display: none;">
-                <i class="fas fa-download"></i>Download QR Code
-            </button>
-        </div>
-        <div class="canvas-container">
-            <canvas id="qr-code" style="display: none;"></canvas>
-        </div>
+    <div class="canvas-container">
+      <canvas id="qr-code" style="display: none;"></canvas>
+      <button class="download-btn" onclick="downloadQRCode()" style="display: none;">
+        <i class="fas fa-download"></i>Download QR Code
+      </button>
     </div>
+  </div>
 
-    <!-- Barcode Generator -->
-    <div id="barcode" class="content">
-        <input id="barcode-input" type="text" placeholder="Enter text for Barcode">
-        <div class="button-container">
-            <button onclick="generateBarcode()"><i class="fas fa-barcode"></i>Generate Barcode</button>
-            <button class="download-btn" onclick="downloadBarcode()" style="display: none;">
-                <i class="fas fa-download"></i>Download Barcode</button>
-        </div>
-        <div class="canvas-container">
-            <canvas id="barcode-canvas" style="display: none;"></canvas>
-        </div>
+  <!-- Barcode Generator -->
+  <div id="barcode" class="content">
+    <input id="barcode-input" type="text" placeholder="Enter text for Barcode" />
+    <div class="button-container">
+      <button onclick="generateBarcode()"><i class="fas fa-barcode"></i>Generate</button>
     </div>
+    <div class="canvas-container">
+      <canvas id="barcode-canvas" style="display: none;"></canvas>
+      <button class="download-btn" onclick="downloadBarcode()" style="display: none;">
+        <i class="fas fa-download"></i>Download Barcode
+      </button>
+    </div>
+  </div>
 
-    <script src="../../../cdn.jsdelivr.net/npm/qrcode/build/qrcode.min.js"></script>
-    <script src="../../../cdn.jsdelivr.net/npm/jsbarcode/dist/JsBarcode.all.min.js"></script>
-    <script>
-        function switchTab(tabId) {
-            document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
-            document.querySelectorAll('.content').forEach(content => content.classList.remove('active'));
-            document.getElementById(tabId).classList.add('active');
-            document.querySelector(`.tab[onclick="switchTab('${tabId}')"]`).classList.add('active');
+  <script src="https://cdn.jsdelivr.net/npm/qrcode/build/qrcode.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jsbarcode/dist/JsBarcode.all.min.js"></script>
+  <script>
+    function switchTab(tabId) {
+      document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
+      document.querySelectorAll('.content').forEach(content => content.classList.remove('active'));
+      document.getElementById(tabId).classList.add('active');
+      document.querySelector(`.tab[onclick="switchTab('${tabId}')"]`).classList.add('active');
+    }
+
+    function generateQRCode() {
+      const qrInput = document.getElementById('qr-input');
+      const qrCanvas = document.getElementById('qr-code');
+      const downloadBtn = document.querySelector('#qr .download-btn');
+
+      if (!qrInput.value.trim()) {
+        alert("Please enter text or a URL!");
+        return;
+      }
+
+      QRCode.toCanvas(qrCanvas, qrInput.value.trim(), { width: 240, margin: 2 }, (error) => {
+        if (!error) {
+          qrCanvas.style.display = 'block';
+          downloadBtn.style.display = 'inline-block';
         }
+      });
+    }
 
-        function generateQRCode() {
-            const qrInput = document.getElementById('qr-input');
-            const qrCanvas = document.getElementById('qr-code');
-            const downloadBtn = document.querySelector('#qr .download-btn');
+    function downloadQRCode() {
+      const qrCanvas = document.getElementById('qr-code');
+      const link = document.createElement('a');
+      link.download = 'qr_code.png';
+      link.href = qrCanvas.toDataURL('image/png');
+      link.click();
+    }
 
-            if (!qrInput.value.trim()) {
-                alert("Please enter text or a URL!");
-                return;
-            }
+    function generateBarcode() {
+      const barcodeInput = document.getElementById('barcode-input');
+      const barcodeCanvas = document.getElementById('barcode-canvas');
+      const downloadBtn = document.querySelector('#barcode .download-btn');
 
-            QRCode.toCanvas(qrCanvas, qrInput.value.trim(), { width: 220, margin: 2 }, (error) => {
-                if (!error) {
-                    qrCanvas.style.display = 'block';
-                    downloadBtn.style.display = 'block';
-                }
-            });
-        }
+      if (!barcodeInput.value.trim()) {
+        alert("Please enter text for the Barcode!");
+        return;
+      }
 
-        function downloadQRCode() {
-            const qrCanvas = document.getElementById('qr-code');
-            const link = document.createElement('a');
-            link.download = 'qr_code.png';
-            link.href = qrCanvas.toDataURL('image/png');
-            link.click();
-        }
+      JsBarcode(barcodeCanvas, barcodeInput.value.trim(), {
+        format: "CODE128",
+        displayValue: true,
+        lineColor: "#000",
+        background: "#fff",
+        width: 2,
+        height: 80,
+        fontSize: 16
+      });
 
-        function generateBarcode() {
-            const barcodeInput = document.getElementById('barcode-input');
-            const barcodeCanvas = document.getElementById('barcode-canvas');
-            const downloadBtn = document.querySelector('#barcode .download-btn');
+      barcodeCanvas.style.display = 'block';
+      downloadBtn.style.display = 'inline-block';
+    }
 
-            if (!barcodeInput.value.trim()) {
-                alert("Please enter text for the Barcode!");
-                return;
-            }
+    function downloadBarcode() {
+      const barcodeCanvas = document.getElementById('barcode-canvas');
+      const link = document.createElement('a');
+      link.download = 'barcode.png';
+      link.href = barcodeCanvas.toDataURL('image/png');
+      link.click();
+    }
+  </script>
 
-            JsBarcode(barcodeCanvas, barcodeInput.value.trim(), { format: "CODE128", displayValue: true });
-            barcodeCanvas.style.display = 'block';
-            downloadBtn.style.display = 'block';
-        }
-
-        function downloadBarcode() {
-            const barcodeCanvas = document.getElementById('barcode-canvas');
-            const link = document.createElement('a');
-            link.download = 'barcode.png';
-            link.href = barcodeCanvas.toDataURL('image/png');
-            link.click();
-        }
-    </script>
-
-
-</body></html>
+</body>
+</html>
