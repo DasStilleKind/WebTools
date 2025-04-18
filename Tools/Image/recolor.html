@@ -1,1 +1,219 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bild Farbänderung</title>
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #1e1e1e; /* Dunkler Hintergrund */
+      color: #f0f0f0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+      padding: 20px;
+    }
 
+    h1 {
+      margin: 20px 0;
+      font-size: 28px;
+      text-align: center;
+    }
+
+    .container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .upload-container {
+      margin-bottom: 20px;
+    }
+
+    #image-preview {
+      max-width: 100%;
+      max-height: 500px;
+      margin-top: 20px;
+    }
+
+    .controls {
+      margin-top: 30px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      align-items: center;
+    }
+
+    .controls input,
+    .controls button {
+      padding: 10px;
+      font-size: 16px;
+      border-radius: 10px;
+      border: none;
+      background-color: #333;
+      color: #fff;
+      margin: 5px;
+    }
+
+    .controls input[type="color"] {
+      padding: 0;
+      border: none;
+      width: 50px;
+      height: 50px;
+      cursor: pointer;
+    }
+
+    .hex-input {
+      width: 120px;
+    }
+
+    .slider {
+      width: 300px;
+    }
+
+    .controls button {
+      background-color: #4CAF50;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+
+    .controls button:hover {
+      background-color: #45a049;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Bild Farbänderung</h1>
+  <div class="container">
+    <!-- Bild hochladen -->
+    <div class="upload-container">
+      <input type="file" id="image-upload" accept="image/*">
+    </div>
+
+    <!-- Bild Vorschau -->
+    <img id="image-preview" src="" alt="Bild wird hier angezeigt" style="display: none;">
+
+    <!-- Farbsteuerung -->
+    <div class="controls">
+      <div>
+        <label for="color-picker">Wähle eine Farbe:</label>
+        <input type="color" id="color-picker">
+      </div>
+
+      <div>
+        <label for="color-slider">Farbwert (RGB):</label>
+        <input type="range" id="red-slider" class="slider" min="0" max="255" value="255">
+        <input type="range" id="green-slider" class="slider" min="0" max="255" value="255">
+        <input type="range" id="blue-slider" class="slider" min="0" max="255" value="255">
+      </div>
+
+      <div>
+        <label for="hex-input">Hex-Wert:</label>
+        <input type="text" id="hex-input" class="hex-input" value="#ffffff">
+      </div>
+
+      <button onclick="applyColorChange()">Farbe anwenden</button>
+    </div>
+  </div>
+
+  <script>
+    // Bild hochladen und anzeigen
+    const imageUpload = document.getElementById('image-upload');
+    const imagePreview = document.getElementById('image-preview');
+
+    imageUpload.addEventListener('change', function(event) {
+      const file = event.target.files[0];
+      const reader = new FileReader();
+
+      reader.onload = function() {
+        imagePreview.src = reader.result;
+        imagePreview.style.display = 'block';
+      };
+
+      if (file) {
+        reader.readAsDataURL(file);
+      }
+    });
+
+    // Farbsteuerung
+    const colorPicker = document.getElementById('color-picker');
+    const hexInput = document.getElementById('hex-input');
+    const redSlider = document.getElementById('red-slider');
+    const greenSlider = document.getElementById('green-slider');
+    const blueSlider = document.getElementById('blue-slider');
+
+    // Wenn die Farbe aus dem Farbkreis geändert wird
+    colorPicker.addEventListener('input', function() {
+      const color = colorPicker.value;
+      hexInput.value = color;
+      const rgb = hexToRgb(color);
+      redSlider.value = rgb.r;
+      greenSlider.value = rgb.g;
+      blueSlider.value = rgb.b;
+    });
+
+    // Wenn RGB Slider geändert wird
+    redSlider.addEventListener('input', updateHex);
+    greenSlider.addEventListener('input', updateHex);
+    blueSlider.addEventListener('input', updateHex);
+
+    // Wenn Hex-Wert manuell geändert wird
+    hexInput.addEventListener('input', function() {
+      const hexColor = hexInput.value;
+      if (/^#[0-9A-Fa-f]{6}$/i.test(hexColor)) {
+        colorPicker.value = hexColor;
+        const rgb = hexToRgb(hexColor);
+        redSlider.value = rgb.r;
+        greenSlider.value = rgb.g;
+        blueSlider.value = rgb.b;
+      }
+    });
+
+    // RGB in Hex umwandeln
+    function rgbToHex(r, g, b) {
+      return '#' + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1).toUpperCase();
+    }
+
+    // Hex in RGB umwandeln
+    function hexToRgb(hex) {
+      let r = 0, g = 0, b = 0;
+      if (hex.length === 4) {
+        r = parseInt(hex[1] + hex[1], 16);
+        g = parseInt(hex[2] + hex[2], 16);
+        b = parseInt(hex[3] + hex[3], 16);
+      } else if (hex.length === 7) {
+        r = parseInt(hex[1] + hex[2], 16);
+        g = parseInt(hex[3] + hex[4], 16);
+        b = parseInt(hex[5] + hex[6], 16);
+      }
+      return { r: r, g: g, b: b };
+    }
+
+    // Die Hex-Farbe basierend auf den Slidern und der Hex-Eingabe aktualisieren
+    function updateHex() {
+      const r = redSlider.value;
+      const g = greenSlider.value;
+      const b = blueSlider.value;
+      hexInput.value = rgbToHex(r, g, b);
+    }
+
+    // Farbe auf das Bild anwenden
+    function applyColorChange() {
+      const hexColor = hexInput.value;
+      imagePreview.style.filter = `sepia(1) saturate(100%) hue-rotate(${getHueFromHex(hexColor)}deg)`;
+    }
+
+    // Hue aus Hex-Wert berechnen (für eine coole Farbverschiebung)
+    function getHueFromHex(hex) {
+      const rgb = hexToRgb(hex);
+      return Math.floor((rgb.r + rgb.g + rgb.b) / 3);
+    }
+  </script>
+
+</body>
+</html>
